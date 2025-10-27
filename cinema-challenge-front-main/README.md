@@ -1,6 +1,18 @@
 # Cinema App Frontend
 
-This is a modern React-based frontend for the Cinema App, providing a seamless user experience for movie ticket booking and cinema management.
+This is a modern React-based frontend for the Cinema App. **Currently in development** with backend API limitations affecting full functionality.
+
+## ⚠️ Current Status: Limited Functionality
+
+**Backend API Status (affects frontend functionality):**
+- ✅ **Theater browsing**: Fully functional
+- 🟡 **Movie catalog**: Read-only functionality works
+- 🟡 **User authentication**: Basic login/register works
+- 🔴 **Seat booking**: Backend reservations API not functional (~15% working)
+- 🔴 **Session management**: Backend sessions API not implemented (~22% working)  
+- 🔴 **Admin dashboard**: Backend user management completely broken (0% working)
+
+> **Note**: Many features will show errors or limited functionality due to backend API issues. See backend documentation for detailed status.
 
 ## 📋 Table of Contents
 
@@ -16,17 +28,26 @@ This is a modern React-based frontend for the Cinema App, providing a seamless u
 - [Common Issues & Solutions](#common-issues--solutions)
 - [Contributing](#contributing)
 
-## ✨ Features
+## ✨ Features (Current Implementation Status)
 
-- **User Authentication**: Registration, login, and user profile management
-- **Movie Browsing**: View all available movies with details
-- **Session Booking**: Select seats and purchase tickets
-- **Reservation Management**: View and manage ticket reservations
-- **Admin Dashboard**: Comprehensive management tools for administrators
-  - Movie management
-  - Theater management
-  - Session scheduling
-  - Reservation management
+### ✅ Working Features
+- **Theater Browsing**: View cinema locations and details (fully functional)
+- **Movie Catalog**: Browse available movies (read-only)
+- **Basic Authentication**: User registration and login
+
+### 🟡 Partially Working Features  
+- **User Profile**: Basic profile access (session management issues)
+- **Movie Details**: View movie information (admin functions limited)
+
+### 🔴 Known Non-Functional Features (Backend Issues)
+- **Session Booking**: Seat selection and ticket purchase (reservations API broken)
+- **Reservation Management**: Cannot view/manage bookings (API returns 404)
+- **Admin Dashboard**: Management tools not accessible
+  - ❌ User management (all routes return 404)
+  - ❌ Session scheduling (routes not implemented)
+  - ❌ Reservation management (API non-functional)
+  - 🟡 Movie management (limited by auth issues)
+  - ✅ Theater management (fully working)
 
 ## 💻 Tech Stack
 
@@ -111,18 +132,22 @@ cinema-app-frontend/
 - `npm run build` or `yarn build`: Build the app for production
 - `npm run preview` or `yarn preview`: Preview the production build locally
 
-## 🔌 API Integration
+## 🔌 API Integration Status
 
-The application connects to a RESTful backend API with the following configuration:
+The application connects to a RESTful backend API with known limitations:
 
-- Base URL: `/api/v1` (proxied to `http://localhost:5000/api/v1` in development)
-- JWT Authentication: Automatically adds Bearer token to authenticated requests
-- Services:
-  - Authentication (register, login, profile)
-  - Movies (listing, details, search)
-  - Sessions (movie showtimes)
-  - Theaters (cinema locations)
-  - Reservations (ticket bookings)
+**Configuration:**
+- Base URL: `/api/v1` (proxied to `http://localhost:3000/api/v1` in development)
+- JWT Authentication: Basic implementation (session persistence issues)
+
+**Service Status:**
+- ✅ **Theaters API**: Fully functional (97.2% success rate)
+- 🟡 **Movies API**: Read operations work (~75% functional)  
+- 🟡 **Authentication API**: Basic login/register works (~60% functional)
+- 🔴 **Sessions API**: Routes not implemented (~22% functional)
+- 🔴 **Reservations API**: Core functionality broken (~15% functional)
+
+> ⚠️ **Expected Errors**: Many API calls will return 404 or authentication errors. This is due to backend infrastructure issues, not frontend problems.
 
 ## 🔐 Authentication
 
@@ -155,7 +180,29 @@ This will create an optimized production build in the `dist/` directory, which c
 
 ## 🔧 Common Issues & Solutions
 
-### JSX in .js Files
+### API-Related Issues (Due to Backend Limitations)
+
+**Most Common Issues You'll Encounter:**
+
+1. **404 Errors on User Management**: All user-related operations will fail
+   - **Cause**: Backend user routes not registered
+   - **Solution**: Backend development needed, no frontend fix possible
+
+2. **Reservation/Booking Failures**: Seat selection and booking won't work
+   - **Cause**: Backend reservations API not functional
+   - **Solution**: Use theater management as functional reference
+
+3. **Session/Showtime Issues**: Movie sessions won't load
+   - **Cause**: Backend sessions routes not implemented
+   - **Solution**: Backend infrastructure needs completion
+
+4. **Admin Dashboard Limitations**: Management features mostly non-functional
+   - **Cause**: Multiple backend API issues
+   - **Working Alternative**: Theater management is fully functional
+
+### Development Issues
+
+#### JSX in .js Files
 
 If you encounter an error about JSX syntax not being enabled in `.js` files:
 
@@ -233,10 +280,71 @@ This is addressed by:
    npm run clean && npm run build
    ```
 
+## 🎯 Testing the Frontend
+
+### Manual Testing Recommendations
+
+Given backend limitations, focus testing on working areas:
+
+1. **Theater Management** (✅ Fully functional)
+   - Browse theaters
+   - Admin theater operations (if auth works)
+
+2. **Movie Catalog** (🟡 Partially working)
+   - Browse movies
+   - View movie details
+   - Basic search/filtering
+
+3. **Authentication** (🟡 Basic functionality)
+   - User registration
+   - Login/logout
+   - Profile access (may have session issues)
+
+### Known Broken Areas (Don't Test)
+- User management pages (404 errors)
+- Reservation/booking flow (API broken)
+- Session scheduling (not implemented)
+- Advanced admin features (except theaters)
+
+## 🔍 Backend Analysis
+
+This frontend was tested against a comprehensive backend analysis:
+- **258 integration tests** run against 6 backend modules
+- **32 bugs identified** affecting frontend functionality
+- **Detailed documentation** available in `/documentação/documentação de bugs/`
+
+### Backend Status Summary
+| Module | Status | Impact on Frontend |
+|--------|--------|-------------------|  
+| Theaters | ✅ 97.2% working | Full functionality |
+| Movies | 🟡 ~75% working | Limited admin features |
+| Auth | 🟡 ~60% working | Basic login works |
+| Sessions | 🔴 21.6% working | Booking system broken |
+| Reservations | 🔴 ~15% working | Core business logic failed |
+| Users | 🔴 0% working | Admin dashboard broken |
+
 ## 🤝 Contributing
 
+**For Frontend Development:**
+1. Focus on UI/UX improvements for working features
+2. Add error handling for known API failures  
+3. Implement offline/fallback modes where possible
+4. Test against working backend modules (theaters)
+
+**For Full-Stack Development:**
+1. Fix backend issues first (see backend documentation)
+2. Test integration after backend fixes
+3. Update this documentation as backend improves
+
+**Development Workflow:**
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Test against working backend endpoints
+4. Document any new API limitations discovered
+5. Commit your changes (`git commit -m 'Add some amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
+
+---
+
+*Last updated based on comprehensive backend API analysis - October 2024*

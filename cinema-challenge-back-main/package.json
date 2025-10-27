@@ -11,9 +11,13 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:unit": "jest --testPathPattern=unit",
-    "test:integration": "jest --testPathPattern=integration",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:integration:watch": "jest --config jest.integration.config.js --watch",
     "test:auth": "jest tests/unit/autenticação",
-    "test:auth:coverage": "jest tests/unit/autenticação --coverage"
+    "test:auth:coverage": "jest tests/unit/autenticação --coverage",
+    "test:integration:auth": "jest --config jest.integration.config.js tests/integration/autenticação",
+    "test:integration:movies": "jest --config jest.integration.config.js tests/integration/filmes",
+    "test:integration:all": "jest --config jest.integration.config.js --runInBand"
   },
   "keywords": [],
   "author": "",
@@ -28,17 +32,20 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10",
+    "@types/jest": "^29.5.8",
     "jest": "^29.7.0",
-    "supertest": "^6.3.3",
-    "@types/jest": "^29.5.8"
+    "nodemon": "^3.1.10",
+    "supertest": "^6.3.3"
   },
   "jest": {
     "testEnvironment": "node",
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
     "testMatch": [
       "**/tests/**/*.test.js"
     ],
@@ -48,6 +55,10 @@
       "!src/config/**"
     ],
     "coverageDirectory": "coverage",
-    "coverageReporters": ["text", "lcov", "html"]
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "html"
+    ]
   }
 }

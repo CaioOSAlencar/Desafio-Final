@@ -54,3 +54,6 @@ connectDB().then(() => {
     console.log(`API documentation available at http://localhost:${PORT}/api/v1/docs`);
   });
 });
+
+// Export app for testing
+module.exports = app;

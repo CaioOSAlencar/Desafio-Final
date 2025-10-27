@@ -109,29 +109,24 @@ Authorization: Bearer {token_copiado}
 
 "Sistema deve processar tokens JWT válidos corretamente e permitir acesso a rotas protegidas para usuários autenticados."
 
-## Evidências Detalhadas
+## Evidências Detalhadas - Status Atual (27/10/2025)
 
 ```
-❌ TODOS OS TESTES DE ROTAS PROTEGIDAS FALHARAM:
+❌ SITUAÇÃO CONFIRMADA: TODOS OS BUGS AINDA EXISTEM NO CÓDIGO PRINCIPAL
 
-Test: TC08 - Deve retornar perfil com token válido
-Expected: 200 "OK"
-Received: 500 "Internal Server Error"
+Testes de Integração Executados:
+- Total: 19 testes
+- Passaram: 3 testes (funcionalidades básicas)
+- Falharam: 16 testes (bugs documentados)
 
-Test: TC10 - Deve atualizar perfil com dados válidos  
-Expected: 200 "OK"
-Received: 500 "Internal Server Error"
+Bugs Confirmados:
+✅ TC03 - Email inválido → 500 (deveria ser 400)
+✅ TC04 - Senha curta → 500 (deveria ser 400)  
+✅ TC08 - Perfil com token → 500 (deveria ser 200)
+✅ TC10-TC12 - Rotas protegidas → 500/timeout
 
-Test: TC11 - Deve alterar senha com senha atual correta
-Expected: 200 "OK"
-Received: 500 "Internal Server Error"
-
-Test: TC12 - Deve rejeitar alteração com senha atual incorreta
-Expected: 401 "Unauthorized" 
-Received: 500 "Internal Server Error"
-
-File: tests/integration/authRoutes.test.js
-Lines: 227, 280, 307, 333
+File: tests/integration/autenticação/authRoutes.test.js
+Status: Bugs documentados e confirmados através de testes
 ```
 
 ## Análise do Middleware (src/middleware/auth.js)
