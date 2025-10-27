@@ -11,9 +11,13 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:unit": "jest --testPathPattern=unit",
-    "test:integration": "jest --testPathPattern=integration",
+    "test:integration": "jest --config jest.integration.config.js",
+    "test:integration:watch": "jest --config jest.integration.config.js --watch",
     "test:auth": "jest tests/unit/autenticação",
-    "test:auth:coverage": "jest tests/unit/autenticação --coverage"
+    "test:auth:coverage": "jest tests/unit/autenticação --coverage",
+    "test:integration:auth": "jest --config jest.integration.config.js tests/integration/autenticação",
+    "test:integration:movies": "jest --config jest.integration.config.js tests/integration/filmes",
+    "test:integration:all": "jest --config jest.integration.config.js --runInBand"
   },
   "keywords": [],
   "author": "",
