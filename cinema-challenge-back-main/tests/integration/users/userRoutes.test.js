@@ -2,8 +2,8 @@
 // Foca em cenários reais de uso e comportamento da API
 
 const request = require('supertest');
-const app = require('../../src/index');
-const { User } = require('../../src/models');
+const app = require('../../../src/index');
+const { User } = require('../../../src/models');
 const { 
   mockUsers,
   createTestUser,
@@ -21,7 +21,7 @@ const {
   validatePasswordHash,
   countUsersByRole,
   generateUniqueId
-} = require('./helpers/userHelpers');
+} = require('../helpers/userHelpers');
 
 describe('Users Integration Tests', () => {
   // Limpar banco antes de cada teste
