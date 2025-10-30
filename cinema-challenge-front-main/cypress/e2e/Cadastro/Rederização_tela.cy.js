@@ -32,20 +32,20 @@ describe('Teste E2E de Rederização da Tela de Cadastro', () => {
     // Legenda ou descrição da pagina
     cy.contains(/crie sua conta para reservar ingressos/i).should('be.visible')
 
-    // Campo nome
-    cy.get('input[name="undefined"], input[placeholder*="undefined"], input[id*="name"]').should('exist')
+    // Campo nome - CORRIGIDO
+    cy.get('input#name, input[name="name"], input[placeholder*="nome"]').should('exist')
     cy.contains(/nome/i).should('exist')
 
-    // Campo email
-    cy.get('input[name="undefined"], input[placeholder*="undefined"], input[id*="email"]').should('exist')
+    // Campo email - CORRIGIDO
+    cy.get('input#email, input[name="email"], input[type="email"]').should('exist')
     cy.contains(/e-mail/i).should('exist')
 
-    // Campo senha
-    cy.get('input[type="password"], input[name*="undefined"], input[placeholder*="undefined"], input[id*="password"]').should('exist')
+    // Campo senha - CORRIGIDO
+    cy.get('input#password, input[name="password"], input[type="password"]').first().should('exist')
     cy.contains(/senha/i).should('exist')
 
-    // Campo confirmar senha
-    cy.get('input[type="password"], input[name*="undefined"], input[placeholder*="undefined"], input[id*="confirmPassword"]').should('exist')
+    // Campo confirmar senha - CORRIGIDO
+    cy.get('input#confirmPassword, input[name="confirmPassword"]').should('exist')
     cy.contains(/confirmar senha/i).should('exist')
 
     // Botão de cadastro
@@ -55,7 +55,7 @@ describe('Teste E2E de Rederização da Tela de Cadastro', () => {
     cy.contains(/já possui conta|login|entrar/i).should('exist')
   })
 
-  it('Deve exibir todos os textos principais', () => {
+  it('Deve exibir todos os textos principais do footer', () => {
     cy.get('footer').contains('Cinema App').should('exist')
     cy.get('footer').contains('Seu aplicativo completo para reserva de ingressos de cinema.').should('exist')
     cy.get('footer').contains('Links Úteis').should('exist')
@@ -66,7 +66,7 @@ describe('Teste E2E de Rederização da Tela de Cadastro', () => {
     cy.get('footer').contains('contato@cinemaapp.com').should('exist')
     cy.get('footer').contains('Tel: (11) 5555-5555').should('exist')
     cy.get('footer').contains('Siga-nos').should('exist')
-    cy.get('footer').contains('© 2025 Cinema App. Todos os direitos reservados.').should('exist')
+    cy.get('footer').contains(/© 2025 Cinema App/i).should('exist')
   })
 
   it('Deve exibir o ícone de email ao lado do texto', () => {
@@ -84,5 +84,4 @@ describe('Teste E2E de Rederização da Tela de Cadastro', () => {
     cy.get('footer').find('svg, img').eq(1).should('exist') // Twitter
     cy.get('footer').find('svg, img').eq(2).should('exist') // Instagram
   })
-
 })

@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.14.7",
+    "@faker-js/faker": "^10.1.0",
     "@vitejs/plugin-react": "^4.2.0",
     "cypress": "^15.5.0",
     "nyc": "^17.1.0",
