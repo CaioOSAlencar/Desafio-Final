@@ -7,24 +7,39 @@ Este documento descreve a configuração e execução dos testes End-to-End (E2E
 ## **📋 Visão Geral**
 
 ### **Cobertura de Testes:**
-- **🔐 Autenticação:** Login, logout, registro, proteção de rotas
-- **🎬 Funcionalidades:** Navegação, reservas, administração
-- **🚨 Tratamento de Erros:** APIs offline, timeouts, validações
-- **📱 Responsividade:** Mobile, tablet, desktop
-- **♿ Acessibilidade:** Navegação por teclado, contraste
+- **� Cadastro:** Fluxos de sucesso, erro e renderização da tela de registro
+- **🔐 Login:** Autenticação válida, inválida e validação de elementos
+- **🏠 Home:** Navegação, elementos principais e responsividade
+- **🎬 Filmes em Cartaz:** Listagem, filtros, detalhes e navegação
+- **🔍 API Health:** Verificação de conectividade com backend
+- **📱 Responsividade:** Testes em mobile, tablet e desktop
+- **🚨 Tratamento de Erros:** Mensagens de erro e estados vazios
 
 ### **Arquitetura:**
 ```
 cypress/
-├── e2e/                    # Testes E2E
-│   ├── auth.cy.js         # Testes de autenticação
-│   ├── movies.cy.js       # Funcionalidades principais
-│   └── error-handling.cy.js # Tratamento de erros
-├── fixtures/              # Dados de teste
-│   ├── users.json        # Usuários de teste
-│   ├── movies.json       # Filmes de teste
-│   ├── theaters.json     # Teatros de teste
-│   └── sessions.json     # Sessões de teste
+├── e2e/                    # Testes E2E organizados por funcionalidade
+│   ├── api_health.cy.js   # Verificação de APIs
+│   ├── Cadastro/          # Testes de registro
+│   │   ├── debug_cadastro.cy.js     # Inspeção de elementos
+│   │   ├── Cadastro_sucesso.cy.js   # Fluxos positivos
+│   │   ├── Cadastro_erro.cy.js      # Fluxos negativos
+│   │   └── Rederização_tela.cy.js   # Renderização
+│   ├── Login/             # Testes de autenticação
+│   │   ├── debug_login.cy.js        # Inspeção de elementos
+│   │   ├── Login_sucesso.cy.js      # Login válido
+│   │   ├── Login_erro.cy.js         # Login inválido
+│   │   └── Rederizacao_tela.cy.js   # Renderização
+│   ├── Home/              # Testes da página inicial
+│   │   ├── debug_home.cy.js         # Inspeção de elementos
+│   │   ├── Home_sucesso.cy.js       # Navegação e elementos
+│   │   ├── Home_erro.cy.js          # Mensagens de erro
+│   │   └── Rederizacao_tela.cy.js   # Renderização
+│   └── Movies/            # Testes de filmes
+│       ├── debug_movies.cy.js       # Inspeção de elementos
+│       ├── Movies_sucesso.cy.js     # Listagem e navegação
+│       ├── Movies_erro.cy.js        # Estados de erro
+│       └── Rederizacao_tela.cy.js   # Renderização
 ├── support/              # Configurações e helpers
 │   ├── commands.js       # Comandos customizados
 │   └── e2e.js           # Configuração global
@@ -48,9 +63,11 @@ cypress/
 npm run cypress:open
 
 # Executar teste específico
-npm run test:e2e:auth      # Apenas autenticação
-npm run test:e2e:movies    # Apenas funcionalidades
-npm run test:e2e:errors    # Apenas tratamento de erros
+npm run test:e2e:cadastro    # Apenas testes de cadastro
+npm run test:e2e:login       # Apenas testes de login
+npm run test:e2e:home        # Apenas testes da home
+npm run test:e2e:movies      # Apenas testes de filmes
+npm run test:e2e:api         # Apenas testes de API health
 ```
 
 #### **CI/CD (Headless):**
@@ -69,6 +86,43 @@ npm run cypress:run:firefox
 npm run test:e2e:ci
 ```
 
+#### **Executar Testes por Cenário:**
+```bash
+# Apenas testes de sucesso
+npx cypress run --spec "**/*_sucesso.cy.js"
+
+# Apenas testes de erro
+npx cypress run --spec "**/*_erro.cy.js"
+
+# Apenas testes de renderização
+npx cypress run --spec "**/Rederizacao_tela.cy.js"
+
+# Apenas testes de debug
+npx cypress run --spec "**/debug_*.cy.js"
+```
+
+#### **Executar Testes Específicos:**
+```bash
+# Testes de Cadastro
+npx cypress run --spec "cypress/e2e/Cadastro/*.cy.js"
+npx cypress run --spec "cypress/e2e/Cadastro/Cadastro_sucesso.cy.js"
+
+# Testes de Login
+npx cypress run --spec "cypress/e2e/Login/*.cy.js"
+npx cypress run --spec "cypress/e2e/Login/Login_sucesso.cy.js"
+
+# Testes da Home
+npx cypress run --spec "cypress/e2e/Home/*.cy.js"
+npx cypress run --spec "cypress/e2e/Home/Home_sucesso.cy.js"
+
+# Testes de Filmes
+npx cypress run --spec "cypress/e2e/Movies/*.cy.js"
+npx cypress run --spec "cypress/e2e/Movies/Movies_sucesso.cy.js"
+
+# Testes de API Health
+npx cypress run --spec "cypress/e2e/api_health.cy.js"
+```
+
 ---
 
 ## **🔧 Configuração**
@@ -85,76 +139,142 @@ env: {
 ```
 
 ### **Timeouts e Configurações:**
+- **Base URL:** http://localhost:3002 (frontend)
+- **API Base URL:** http://localhost:3000/api/v1 (backend)
 - **Viewport padrão:** 1280x720
 - **Timeout de comandos:** 10 segundos
 - **Timeout de requests:** 10 segundos
 - **Timeout de carregamento:** 30 segundos
+- **Vídeos:** Desabilitados (performance)
+- **Screenshots:** Habilitados em falhas
 
 ---
 
 ## **🧪 Estrutura dos Testes**
 
-### **1. Testes de Autenticação (auth.cy.js):**
+### **1. Testes de Cadastro (Cadastro/):**
 ```javascript
-describe('🔐 Autenticação E2E', () => {
-  // ✅ Login com credenciais válidas
-  // ❌ Login com credenciais inválidas
-  // 📝 Validação de formulários
-  // 🔒 Proteção de rotas
-  // 🔄 Persistência de sessão
+describe('Cadastro - Caminho Bom', () => {
+  // ✅ Cadastro com dados válidos
+  // ✅ Cadastro e login automático
+  // ✅ Cadastro e login manual
+  // ✅ Validação de dados realistas
+  // ✅ Limpar e preencher campos novamente
+  // ✅ Caracteres especiais no nome
+  // ✅ Responsividade (mobile, tablet, desktop)
+})
+
+describe('Cadastro - Caminho Ruim', () => {
+  // ❌ Campos obrigatórios vazios
+  // ❌ Senhas diferentes
+  // ❌ Email já cadastrado
+})
+
+describe('Teste E2E de Renderização da Tela de Cadastro', () => {
+  // 🎨 Verificação de elementos visuais
   // 📱 Responsividade
+  // 🔍 Inspeção de inputs e botões
 })
 ```
 
 **Cenários Cobertos:**
-- Login/logout de usuário comum
-- Login/logout de administrador
-- Registro de novos usuários
-- Validações de email e senha
-- Redirecionamentos após login
-- Proteção de rotas por role
-- Tratamento de tokens expirados
+- Formulários de registro com validações
+- Mensagens de erro e sucesso
+- Responsividade em diferentes dispositivos
+- Navegação entre páginas
 
-### **2. Funcionalidades Principais (movies.cy.js):**
+### **2. Testes de Login (Login/):**
 ```javascript
-describe('🎬 Funcionalidades do Cinema E2E', () => {
-  // 🎭 Navegação de filmes
-  // 🎫 Seleção de sessões
-  // 💺 Seleção de assentos
-  // 💳 Processo de reserva
-  // 📋 Minhas reservas
-  // 👨‍💼 Área administrativa
+describe('Login - Caminho Bom', () => {
+  // ✅ Login com credenciais válidas
+  // ✅ Validação de dados realistas
+  // ✅ Limpar e preencher campos novamente
+  // ✅ Caracteres especiais no email
+  // ✅ Responsividade (mobile, tablet, desktop)
+})
+
+describe('Login - Caminho Ruim', () => {
+  // ❌ Campos obrigatórios vazios
+  // ❌ Credenciais inválidas
+})
+
+describe('Teste E2E de Renderização da Tela de Login', () => {
+  // 🎨 Verificação de elementos visuais
+  // 📱 Responsividade
+  // 🔍 Inspeção de inputs e botões
 })
 ```
 
 **Cenários Cobertos:**
-- Listagem e filtros de filmes
-- Detalhes de filmes e sessões
-- Seleção de assentos (disponíveis/ocupados)
-- Fluxo completo de reserva
-- Gerenciamento de reservas
-- CRUD de filmes (admin)
-- CRUD de sessões (admin)
-
-### **3. Tratamento de Erros (error-handling.cy.js):**
-```javascript
-describe('🚨 Tratamento de Erros E2E', () => {
-  // 🔌 Erros de API
-  // ⏱️ Timeouts e loading
-  // 🔍 Validações frontend
-  // ♿ Acessibilidade
-  // ⚡ Performance
-})
-```
-
-**Cenários Cobertos:**
-- APIs offline/indisponíveis
-- Timeouts de requisições
-- Erros 404, 500, 401, 403
+- Autenticação de usuários
 - Validações de formulário
-- Estados de loading
-- Assentos já ocupados
-- Sessões expiradas
+- Estados de erro e sucesso
+- Responsividade
+
+### **3. Testes da Home (Home/):**
+```javascript
+describe('Home - Caminho Bom', () => {
+  // ✅ Renderização de elementos principais
+  // ✅ Navegação para filmes em cartaz
+})
+
+describe('Home - Caminho Ruim', () => {
+  // ❌ Mensagens de erro ao não carregar filmes
+  // ❌ Estados vazios
+})
+
+describe('Teste E2E de Renderização da Tela Home', () => {
+  // 🎨 Verificação de elementos visuais
+  // 📱 Responsividade
+  // 🔍 Inspeção de títulos, seções e botões
+})
+```
+
+**Cenários Cobertos:**
+- Página inicial do sistema
+- Navegação principal
+- Estados de carregamento
+- Responsividade
+
+### **4. Testes de Filmes (Movies/):**
+```javascript
+describe('Filmes em Cartaz - Caminho Bom', () => {
+  // ✅ Exibir lista de filmes corretamente
+  // ✅ Acessar detalhes de um filme
+})
+
+describe('Filmes em Cartaz - Caminho Ruim', () => {
+  // ❌ Mensagens de erro ao não carregar filmes
+  // ❌ Estados vazios
+})
+
+describe('Teste E2E de Renderização da Tela de Filmes', () => {
+  // 🎨 Verificação de elementos visuais
+  // 📱 Responsividade
+  // 🔍 Inspeção de filtros, cards e detalhes
+})
+```
+
+**Cenários Cobertos:**
+- Listagem de filmes em cartaz
+- Filtros e busca
+- Detalhes de filmes
+- Navegação entre páginas
+- Responsividade
+
+### **5. Testes de API Health (api_health.cy.js):**
+```javascript
+describe('API Health Check', () => {
+  // 🔍 Verificação de conectividade com backend
+  // 📊 Status das principais rotas da API
+  // 🚨 Detecção de problemas de conectividade
+})
+```
+
+**Cenários Cobertos:**
+- Verificação de saúde das APIs
+- Testes de endpoints principais
+- Detecção de falhas de conectividade
 
 ---
 
@@ -418,8 +538,9 @@ cy.wait(1000)
 
 ### **4. APIs não disponíveis:**
 - Verificar se backend está rodando
-- Verificar URLs nas configurações
+- Verificar se frontend está rodando (baseUrl)
 - Usar mocks quando necessário
+- Cypress sempre verifica se o baseUrl está acessível antes de executar testes
 
 ---
 
